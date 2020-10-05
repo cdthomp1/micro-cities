@@ -10,7 +10,7 @@ The features are split up into five different categories; Game Start, Player Mov
 - [ ] Game start zoomed into center of map
     - [ ] Start with a 20 x 20 tile view
     - [ ] Game will expand as time goes on
-        - [ ] Every [] clicks (Exact Specification TBD), expand by 6 tiles on both axes (See Rules for more info)
+        - [ ] Every [] "clicks" (Exact Specification TBD), expand by 6 tiles on both axes (See Rules for more info)
 - [ ] Game will start with a random house and a random store
     - [ ] Player will need to connect the two with a road
     - [ ] House will have one car
