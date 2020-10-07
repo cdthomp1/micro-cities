@@ -40,7 +40,9 @@ var keysDown = {
     40: false
 };
 
-
+var rectangle = new Path2D();
+    rectangle.rect(10, 10, 30, 30);
+    
 
 var player = new Character();
 function Character() {
@@ -166,6 +168,8 @@ function drawGame() {
 
     ctx.fillStyle = "#ff0000";
     ctx.fillText("FPS: " + framesLastSecond, 10, 20);
+
+     ctx.stroke(rectangle);
 
     lastFrameTime = currentFrameTime;
     requestAnimationFrame(drawGame);
