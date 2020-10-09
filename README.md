@@ -1,3 +1,5 @@
+<p style=""><img src="assets/images/header-image.jpg" /></p>
+
 # Micro Cities
 A city building game where you have control of the development of roads, businesses, and houses. You also have control over the infrastructure like power, water, and gas! (Future feature).
 
@@ -25,9 +27,11 @@ The features are split up into five different categories; Game Start, Player Mov
     - [ ] A week will last seven minutes
         - [ ] A day lasts a minute
     - [ ] Every [] "clicks" (Exact Specification TBD), expand by 6 tiles on both axes (3 up, 3 down, 3 left, 3 right)
+- [ ] Players get points for each successful car -> store, work, park, airport, ect. Each time a car makes it to a destination and back to its house, the player gets a point. 
 
 
 ### Goals
 
 ### Free Play
+- [ ] A sandbox mode where a user doesn't get penalized for not having a car arrive at a destination
 
