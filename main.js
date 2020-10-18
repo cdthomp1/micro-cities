@@ -1,176 +1,136 @@
+function Tile(x, y, w, h, i, c, b, d, t, id, ss) {
+    this.id = id;
+    this.xCord = x;
+    this.yCord = y;
+    this.width = w;
+    this.height = h;
+    this.image = i;
+    this.color = c;
+    this.buildable = b;
+    this.dragable = d;
+    this.type = t;
+    this.strokeStyle = ss;
+    this.draw = function (canvas) {
+        var ctx = canvas.getContext('2d');
 
+        if (!this.image) {
+            ctx.fillStyle = this.color;
+            ctx.fillRect(this.xCord, this.yCord, this.width, this.height);
+        } else {
+            var img = new Image();
+            img.onload = () => {
+                ctx.drawImage(img, 0, 0, 45, 45, this.xCord, this.yCord, this.width, this.height);
+                ctx.strokeStyle = this.strokeStyle;
+                ctx.strokeRect(this.xCord, this.yCord, this.height, this.width)
+            }
+            img.src = this.image;
+        }
+    };
 
-var ctx = null;
-var gameMap = [
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-];
-
-/* for (var i = 0; i < gameMap.length; i++) {
-    if (gameMap[i] == 2) {
-        console.log(`Index ${i}: ${gameMap[i]}`)
+    this.hover = function(canvas){
+        this.draw(canvas);
     }
-} */
 
-var tileW = 30, tileH = 30;
-var mapW = 34, mapH = 19;
-var currentSecond = 0, frameCount = 0, framesLastSecond = 0, lastFrameTime = 0;
+}
 
-var keysDown = {
-    37: false,
-    38: false,
-    39: false,
-    40: false
-};
+var canvas = document.getElementById('game');
+var context = canvas.getContext('2d');
 
-var rectangle = new Path2D();
-    rectangle.rect(10, 10, 30, 30);
+
+var tiles = [];
+
+var selectedTile = null;
+
+
+// Fill Tiles array with the map 
+// x loop
+for (var i = 0; i < 450; i += 45) {
+    // y loop
+    for (var j = 0; j < 450; j += 45) {
+        var tile = new Tile(i, j, 45, 45, './assets/images/grass.png', 'green', true, false, null, null, 'grey');
+        tiles.push(tile);
+    }
+}
+
+for (var i = 0; i <tiles.length; i++) {
+    tiles[i].id = i;
+}
+
+// Draw each Tile
+function draw(canvas) {
+    tiles.forEach(t => {
+        t.draw(canvas)
+    });
+}
+
+// Track Mouse
+function getMousePos(canvas, evt) {
+    var rect = canvas.getBoundingClientRect();
+    return {
+        x: evt.clientX - rect.left,
+        y: evt.clientY - rect.top
+    };
+}
+
+// Track mouse Click
+function getMousePosition(canvas, event) {
+    let rect = canvas.getBoundingClientRect();
+    let x = event.clientX - rect.left;
+    let y = event.clientY - rect.top;
+    console.log("Coordinate x: " + x,
+        "Coordinate y: " + y);
+    var tile = getTile(x, y);
+
+    if (tile && tile.buildable === true) {
+        console.log('here')
+        tile.strokeStyle = 'yellow';
+        tile.draw(canvas);
+        selectedTile = tile.id;
+    } else {
+        tile.strokeStyle = 'grey';
+        tile.draw(canvas);
+    }
+
+
+}
+
     
 
-var player = new Character();
-function Character() {
-    this.tileFrom = [13, 11];
-    this.tileTo = [13, 11];
-    this.timeMoved = 0;
-    this.dimensions = [10, 10];
-    this.position = [310, 370];
-    this.delayMove = 1000;
-}
+// Get the tile with the mouse coords
+function getTile(x, y) {
+    var mx = x;
+    var my = y;
 
-Character.prototype.placeAt = function (x, y) {
-    this.tileFrom = [x, y];
-    this.tileTo = [x, y];
-    this.position = [((tileW * x) + ((tileW - this.dimensions[0]) / 2)),
-    ((tileH * y) + ((tileH - this.dimensions[1]) / 2))];
-};
+    for (var i = 0; i < tiles.length; i++) {
+        var r = tiles[i];
+        if (mx > r.xCord && mx < r.xCord + r.width && my > r.yCord && my < r.yCord + r.height) {
 
-Character.prototype.processMovement = function (t) {
-    if (this.tileFrom[0] == this.tileTo[0] && this.tileFrom[1] == this.tileTo[1]) { return false; }
-
-    if ((t - this.timeMoved) >= this.delayMove) {
-        this.placeAt(this.tileTo[0], this.tileTo[1]);
+           return r;
+        } 
     }
-    else {
-        this.position[0] = (this.tileFrom[0] * tileW) + ((tileW - this.dimensions[0]) / 2);
-        this.position[1] = (this.tileFrom[1] * tileH) + ((tileH - this.dimensions[1]) / 2);
-
-        if (this.tileTo[0] != this.tileFrom[0]) {
-            var diff = (tileW / this.delayMove) * (t - this.timeMoved);
-            this.position[0] += (this.tileTo[0] < this.tileFrom[0] ? 0 - diff : diff);
-        }
-        if (this.tileTo[1] != this.tileFrom[1]) {
-            var diff = (tileH / this.delayMove) * (t - this.timeMoved);
-            this.position[1] += (this.tileTo[1] < this.tileFrom[1] ? 0 - diff : diff);
-        }
-
-        this.position[0] = Math.round(this.position[0]);
-        this.position[1] = Math.round(this.position[1]);
-    }
-
-    return true;
-}
-
-function toIndex(x, y) {
-    return ((y * mapW) + x);
 }
 
 
-window.onload = function () {
-    ctx = document.getElementById('game').getContext("2d");
-    requestAnimationFrame(drawGame);
-    ctx.font = "bold 10pt sans-serif";
+canvas.addEventListener("mousedown", function (e) {
+    getMousePosition(canvas, e);
+});
 
-    window.addEventListener("keydown", function (e) {
-        if (e.keyCode >= 37 && e.keyCode <= 40) { keysDown[e.keyCode] = true; }
-    });
-    window.addEventListener("keyup", function (e) {
-        if (e.keyCode >= 37 && e.keyCode <= 40) { keysDown[e.keyCode] = false; }
-    });
-};
 
-function drawGame() {
-    if (ctx == null) { return; }
+function place(id) {
+    if (id === 'house') {
+        tiles[selectedTile].image = './assets/images/house.png';
+        tiles[selectedTile].draw(canvas);
+        tiles[selectedTile].buildable = false;
 
-    var currentFrameTime = Date.now();
-    var timeElapsed = currentFrameTime - lastFrameTime;
-
-    var sec = Math.floor(Date.now() / 1000);
-    if (sec != currentSecond) {
-        currentSecond = sec;
-        framesLastSecond = frameCount;
-        frameCount = 1;
+    } else if (id === 'road') {
+        tiles[selectedTile].image = './assets/images/road.png';
+        tiles[selectedTile].draw(canvas);
+        tiles[selectedTile].buildable = false;
+    } else if (id === 'store') {
+        tiles[selectedTile].image = './assets/images/store.png';
+        tiles[selectedTile].draw(canvas);
+        tiles[selectedTile].buildable = false;
     }
-    else { frameCount++; }
-    // Check movement
-    if (!player.processMovement(currentFrameTime)) {
-        // Up Arrow
-        console.log(`${keysDown[38]} && ${player.tileFrom[1]} > 0 && ${gameMap[toIndex(player.tileFrom[0], player.tileFrom[1])]} == 2`)
-        // console.log(`${toIndex(player.tileFrom[0], player.tileFrom[1])} == 2`)
-        if (keysDown[38] && player.tileFrom[1] > 0 && gameMap[toIndex(player.tileFrom[0], player.tileFrom[1] - 1)] == 2) {
-            player.tileTo[1] -= 1;
-        } else if (keysDown[40] && player.tileFrom[1] < (mapH - 1) && gameMap[toIndex(player.tileFrom[0], player.tileFrom[1] + 1)] == 2) {
-            player.tileTo[1] += 1;
-        } else if (keysDown[37] && player.tileFrom[0] > 0 && gameMap[toIndex(player.tileFrom[0] - 1, player.tileFrom[1])] == 2) {
-            player.tileTo[0] -= 1;
-        } else if (keysDown[39] && player.tileFrom[0] < (mapW - 1) && gameMap[toIndex(player.tileFrom[0] + 1, player.tileFrom[1])] == 2) {
-            player.tileTo[0] += 1;
-        }
-
-       if (player.tileFrom[0] != player.tileTo[0] || player.tileFrom[1] != player.tileTo[1]) { player.timeMoved = currentFrameTime; }
-    }
-
-    // console.log(player.position[0], player.position[1])
-
-    for (var y = 0; y < mapH; ++y) {
-        for (var x = 0; x < mapW; ++x) {
-            switch (gameMap[((y * mapW) + x)]) {
-                case 0:
-                    ctx.fillStyle = "#685b48";
-                    break;
-                case 1:
-                    ctx.fillStyle = "#5aa457";
-                    break;
-                case 2:
-                    ctx.fillStyle = "#757575";
-                    break;
-                case 3:
-                    ctx.fillStyle = "#ff0000";
-                    break;
-                default:
-                    ctx.fillStyle = "#5aa457";
-            }
-
-            ctx.fillRect(x * tileW, y * tileH, tileW, tileH);
-        }
-    }
-
-    ctx.fillStyle = "#0000ff";
-    // console.log(player.position[0]);
-    ctx.fillRect(player.position[0], player.position[1],
-        player.dimensions[0], player.dimensions[1]);
-
-    ctx.fillStyle = "#ff0000";
-    ctx.fillText("FPS: " + framesLastSecond, 10, 20);
-
-     ctx.stroke(rectangle);
-
-    lastFrameTime = currentFrameTime;
-    requestAnimationFrame(drawGame);
 }
+
+draw(canvas);

@@ -1,0 +1,28 @@
+<diagram program="umletino" version="14.4.0-SNAPSHOT"><zoom_level>10</zoom_level><element><id>UMLClass</id><coordinates><x>90</x><y>60</y><w>210</w><h>190</h></coordinates><panel_attributes>Tile
+--
++ xCoord: int
++ yCoord : int
++ width : int
++ height : int
++ texture : Image
++ buildable : Bool
++ type : Enum
+--
++ drawTile()
++ updateTile(tile)
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>380</x><y>60</y><w>210</w><h>190</h></coordinates><panel_attributes>Car
+--
+
+--
+
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>660</x><y>60</y><w>210</w><h>190</h></coordinates><panel_attributes>Building
+--
+
+--
+
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>940</x><y>60</y><w>210</w><h>190</h></coordinates><panel_attributes>Location
+--
+
+
+--
+</panel_attributes><additional_attributes></additional_attributes></element></diagram>
