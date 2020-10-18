@@ -5,50 +5,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <style>
-        #game {
-            background-color: black;
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
-        #wrapper {
-            position: relative;
-        }
-
-        #wrapper>div {
-            position: absolute;
-
-            height: 45px;
-            width: 45px;
-        }
-
-        #wrapper>div:hover {
-            border: 1px solid blue;
-        }
-    </style>
+    <link rel="stylesheet" href="./style.css">
 </head>
 
 <body>
-    <!-- <canvas id="game" width="1224" height="576"></canvas> -->
-<div class="game-Board">
-    <canvas id="game" width="450" height="450"></canvas>
-    <div class="selector">
-        <div class="road" id="road" onclick="place(this.id)">
-            <img src="./assets/images/road.png" alt="">
+    <h1>Micro Cities</h1>
+    <div class="game-board">
+        <div>
+            <canvas id="game" width="450" height="450"></canvas>
         </div>
-        <div class="house" id="house" onclick="place(this.id)">
-            <img src="./assets/images/house.png" alt="">
+        <div class="selector">
+            <ol>
+                <li>Click on a square on the board on the left</li>
+                <li>Then select a tile to build below</li>
+            </ol>
+            <div class="road">
+                <img src="./assets/images/road.png" id="road" onclick="place(this.id)" alt="">
+                <span>Road</span>
+            </div>
+            <div class="house">
+                <img src="./assets/images/house.png" id="house" onclick="place(this.id)" alt="">
+                <span>House</span>
+            </div>
+            <div class="store">
+                <img src="./assets/images/store.png" id="store" onclick="place(this.id)" alt="">
+                <span>Store</span>
+            </div>
         </div>
     </div>
-</div>
-
+    <footer>Copyright &copy; 2020 | Cameron Thompson | <a href="https://cameronthompson.io">cameronthompson.io</a></footer>
     <script src="main.js"></script>
     <div style="display:none;">
         <img id="source" src="./assets/images/grass.png">
     </div>
+
 </body>
 
 </html>

@@ -82,14 +82,19 @@ function getMousePosition(canvas, event) {
     var tile = getTile(x, y);
 
     if (tile && tile.buildable === true) {
-
+        console.log('here')
         tile.strokeStyle = 'yellow';
+        tile.draw(canvas);
         selectedTile = tile.id;
-
+    } else {
+        tile.strokeStyle = 'grey';
+        tile.draw(canvas);
     }
 
 
 }
+
+    
 
 // Get the tile with the mouse coords
 function getTile(x, y) {
@@ -106,30 +111,6 @@ function getTile(x, y) {
 }
 
 
-canvas.addEventListener('mousemove', function (evt) {
-    var mousePos = getMousePos(canvas, evt);
-    getTile(mousePos.x, mousePos.y)
-
-    var mx = mousePos.x;
-    var my = mousePos.y;
-
-    for (var i = 0; i < tiles.length; i++) {
-        var r = tiles[i];
-        if (mx > r.xCord && mx < r.xCord + r.width && my > r.yCord && my < r.yCord + r.height) {
-
-            r.strokeStyle = "blue"
-            r.hover(canvas);
-
-        } else {
-            r.strokeStyle = "grey"
-            r.hover(canvas);
-        }
-    }
-
-
-    // console.log('Mouse position: ' + mousePos.x + ',' + mousePos.y);
-}, false);
-
 canvas.addEventListener("mousedown", function (e) {
     getMousePosition(canvas, e);
 });
@@ -140,12 +121,15 @@ function place(id) {
         tiles[selectedTile].image = './assets/images/house.png';
         tiles[selectedTile].draw(canvas);
         tiles[selectedTile].buildable = false;
-        console.log(tiles[selectedTile])
+
     } else if (id === 'road') {
         tiles[selectedTile].image = './assets/images/road.png';
         tiles[selectedTile].draw(canvas);
         tiles[selectedTile].buildable = false;
-        console.log(tiles[selectedTile])
+    } else if (id === 'store') {
+        tiles[selectedTile].image = './assets/images/store.png';
+        tiles[selectedTile].draw(canvas);
+        tiles[selectedTile].buildable = false;
     }
 }
 
