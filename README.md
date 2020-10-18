@@ -8,7 +8,7 @@ The features are split up into five different categories; Game Start, Player Mov
 
 ### Game Start
 - [ ] Tile style game/top down view
-    - [ ] Map is 100 X 100 tiles, each tile is 16 X 16 pixels
+    - [ ] Map is 100 X 100 tiles, each tile is 30 X 30 pixels
 - [ ] Game start zoomed into center of map
     - [ ] Start with a 20 x 20 tile view
     - [ ] Game will expand as time goes on
@@ -21,6 +21,17 @@ The features are split up into five different categories; Game Start, Player Mov
 ### Player Moves
 
 ### Game Components
+- [ ] Car
+- [ ] House
+- [ ] Mall/Shop
+- [ ] Road
+- [ ] Bridge
+- [ ] Highways
+#### Future Components
+- [ ] Power Plant
+- [ ] Power Lines
+- [ ] Coal Mines
+- [ ] Renewable Energy
 
 ### Rules
 - [ ] Once a "week" the board will expand

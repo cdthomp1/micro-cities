@@ -1,207 +1,152 @@
-var canvas = document.getElementById("game");
-var ctx = canvas.getContext("2d");
-var BB = canvas.getBoundingClientRect();
-var offsetX = BB.left;
-var offsetY = BB.top;
-var WIDTH = canvas.width;
-var HEIGHT = canvas.height;
+function Tile(x, y, w, h, i, c, b, d, t, id, ss) {
+    this.id = id;
+    this.xCord = x;
+    this.yCord = y;
+    this.width = w;
+    this.height = h;
+    this.image = i;
+    this.color = c;
+    this.buildable = b;
+    this.dragable = d;
+    this.type = t;
+    this.strokeStyle = ss;
+    this.draw = function (canvas) {
+        var ctx = canvas.getContext('2d');
 
-// drag related variables
-var dragok = false;
-var startX;
-var startY;
-
-
-// an array of objects that define different rectangles
-var rects = [];
-// Place Holders, placed every 40 px on the y axis
-rects.push({
-    x: 250,
-    y: 10,
-    width: 30,
-    height: 30,
-    fill: "#5e2006",
-    name: "TEST 3",
-    isDragging: false,
-    isDraggable: false
-});
-
-rects.push({
-    x: 250,
-    y: 50,
-    width: 30,
-    height: 30,
-    fill: "#444444",
-    isDragging: false,
-    isDraggable: false
-});
-
-rects.push({
-    x: 250,
-    y: 90,
-    width: 30,
-    height: 30,
-    fill: "#800080",
-    isDragging: false,
-    isDraggable: false
-});
-rects.push({
-    x: 250,
-    y: 130,
-    width: 30,
-    height: 30,
-    fill: "#0c64e8",
-    isDragging: false,
-    isDraggable: false
-});
-
-
-
-rects.push({
-    x: 250,
-    y: 10,
-    width: 30,
-    height: 30,
-    fill: "#ff550d",
-    name: "TEST 1",
-    isDragging: false,
-    isDraggable: true
-});
-rects.push({
-    x: 250,
-    y: 10,
-    width: 30,
-    height: 30,
-    fill: "#ff550d",
-    name: "TEST 2",
-    isDragging: false,
-    isDraggable: true
-});
-
-
-
-
-// listen for mouse events
-canvas.onmousedown = myDown;
-canvas.onmouseup = myUp;
-canvas.onmousemove = myMove;
-
-// call to draw the scene
-draw();
-
-// draw a single rect
-function rect(x, y, w, h) {
-    ctx.beginPath();
-    ctx.rect(x, y, w, h);
-    ctx.closePath();
-    ctx.stroke();
-    ctx.fill();
-}
-
-// clear the canvas
-function clear() {
-    ctx.clearRect(0, 0, WIDTH, HEIGHT);
-}
-
-// redraw the scene
-function draw() {
-    clear();
-    ctx.fillStyle = "#FAF7F8";
-    rect(0, 0, WIDTH, HEIGHT);
-    // redraw each rect in the rects[] array
-    // console.log(rects.length)
-    for (var i = 0; i < rects.length; i++) {
-        var r = rects[i];
-        if(r.fill){
-            ctx.fillStyle = r.fill;
+        if (!this.image) {
+            ctx.fillStyle = this.color;
+            ctx.fillRect(this.xCord, this.yCord, this.width, this.height);
         } else {
-            
-        }
-        rect(r.x, r.y, r.width, r.height);
-    }
-}
-
-
-// handle mousedown events
-function myDown(e) {
-
-    // tell the browser we're handling this mouse event
-    e.preventDefault();
-    e.stopPropagation();
-
-    // get the current mouse position
-    var mx = parseInt(e.clientX - offsetX);
-    var my = parseInt(e.clientY - offsetY);
-    console.log(`${mx}, ${my}`)
-    // test each rect to see if mouse is inside
-    dragok = false;
-    for (var i = 0; i < rects.length; i++) {
-        var r = rects[i];
-        if (mx > r.x && mx < r.x + r.width && my > r.y && my < r.y + r.height) {
-            dragok = true;
-            console.log(r.name);
-            if (r.isDraggable !== false){
-                r.isDragging = true;
-                break;
+            var img = new Image();
+            img.onload = () => {
+                ctx.drawImage(img, 0, 0, 45, 45, this.xCord, this.yCord, this.width, this.height);
+                ctx.strokeStyle = this.strokeStyle;
+                ctx.strokeRect(this.xCord, this.yCord, this.height, this.width)
             }
-            // if yes, set that rects isDragging=true
+            img.src = this.image;
+        }
+    };
+
+    this.hover = function(canvas){
+        this.draw(canvas);
+    }
+
+}
+
+var canvas = document.getElementById('game');
+var context = canvas.getContext('2d');
+
+
+var tiles = [];
+
+var selectedTile = null;
+
+
+// Fill Tiles array with the map 
+// x loop
+for (var i = 0; i < 450; i += 45) {
+    // y loop
+    for (var j = 0; j < 450; j += 45) {
+        var tile = new Tile(i, j, 45, 45, './assets/images/grass.png', 'green', true, false, null, null, 'grey');
+        tiles.push(tile);
+    }
+}
+
+for (var i = 0; i <tiles.length; i++) {
+    tiles[i].id = i;
+}
+
+// Draw each Tile
+function draw(canvas) {
+    tiles.forEach(t => {
+        t.draw(canvas)
+    });
+}
+
+// Track Mouse
+function getMousePos(canvas, evt) {
+    var rect = canvas.getBoundingClientRect();
+    return {
+        x: evt.clientX - rect.left,
+        y: evt.clientY - rect.top
+    };
+}
+
+// Track mouse Click
+function getMousePosition(canvas, event) {
+    let rect = canvas.getBoundingClientRect();
+    let x = event.clientX - rect.left;
+    let y = event.clientY - rect.top;
+    console.log("Coordinate x: " + x,
+        "Coordinate y: " + y);
+    var tile = getTile(x, y);
+
+    if (tile && tile.buildable === true) {
+
+        tile.strokeStyle = 'yellow';
+        selectedTile = tile.id;
+
+    }
+
+
+}
+
+// Get the tile with the mouse coords
+function getTile(x, y) {
+    var mx = x;
+    var my = y;
+
+    for (var i = 0; i < tiles.length; i++) {
+        var r = tiles[i];
+        if (mx > r.xCord && mx < r.xCord + r.width && my > r.yCord && my < r.yCord + r.height) {
+
+           return r;
+        } 
+    }
+}
+
+
+canvas.addEventListener('mousemove', function (evt) {
+    var mousePos = getMousePos(canvas, evt);
+    getTile(mousePos.x, mousePos.y)
+
+    var mx = mousePos.x;
+    var my = mousePos.y;
+
+    for (var i = 0; i < tiles.length; i++) {
+        var r = tiles[i];
+        if (mx > r.xCord && mx < r.xCord + r.width && my > r.yCord && my < r.yCord + r.height) {
+
+            r.strokeStyle = "blue"
+            r.hover(canvas);
+
+        } else {
+            r.strokeStyle = "grey"
+            r.hover(canvas);
         }
     }
-    // save the current mouse position
-    startX = mx;
-    startY = my;
-}
 
 
-// handle mouseup events
-function myUp(e) {  
-    // tell the browser we're handling this mouse event
-    e.preventDefault();
-    e.stopPropagation();
+    // console.log('Mouse position: ' + mousePos.x + ',' + mousePos.y);
+}, false);
 
-    // clear all the dragging flags
-    dragok = false;
-    for (var i = 0; i < rects.length; i++) {
-        rects[i].isDragging = false;
+canvas.addEventListener("mousedown", function (e) {
+    getMousePosition(canvas, e);
+});
+
+
+function place(id) {
+    if (id === 'house') {
+        tiles[selectedTile].image = './assets/images/house.png';
+        tiles[selectedTile].draw(canvas);
+        tiles[selectedTile].buildable = false;
+        console.log(tiles[selectedTile])
+    } else if (id === 'road') {
+        tiles[selectedTile].image = './assets/images/road.png';
+        tiles[selectedTile].draw(canvas);
+        tiles[selectedTile].buildable = false;
+        console.log(tiles[selectedTile])
     }
 }
 
-
-// handle mouse moves
-function myMove(e) {
-    // if we're dragging anything...
-    if (dragok) {
-
-        // tell the browser we're handling this mouse event
-        e.preventDefault();
-        e.stopPropagation();
-
-        // get the current mouse position
-        var mx = parseInt(e.clientX - offsetX);
-        var my = parseInt(e.clientY - offsetY);
-
-        // calculate the distance the mouse has moved
-        // since the last mousemove
-        var dx = mx - startX;
-        var dy = my - startY;
-
-        // move each rect that isDragging 
-        // by the distance the mouse has moved
-        // since the last mousemove
-        for (var i = 0; i < rects.length; i++) {
-            var r = rects[i];
-            if (r.isDragging) {
-                r.x += dx;
-                r.y += dy;
-            }
-        }
-
-        // redraw the scene with the new rect positions
-        draw();
-
-        // reset the starting mouse position for the next mousemove
-        startX = mx;
-        startY = my;
-
-    }
-}
+draw(canvas);

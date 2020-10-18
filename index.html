@@ -1,17 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
-        #game{
+        #game {
             background-color: black;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        #wrapper {
+            position: relative;
+        }
+
+        #wrapper>div {
+            position: absolute;
+
+            height: 45px;
+            width: 45px;
+        }
+
+        #wrapper>div:hover {
+            border: 1px solid blue;
         }
     </style>
 </head>
+
 <body>
-    <canvas id="game" width="1224" height="576"></canvas>
+    <!-- <canvas id="game" width="1224" height="576"></canvas> -->
+<div class="game-Board">
+    <canvas id="game" width="450" height="450"></canvas>
+    <div class="selector">
+        <div class="road" id="road" onclick="place(this.id)">
+            <img src="./assets/images/road.png" alt="">
+        </div>
+        <div class="house" id="house" onclick="place(this.id)">
+            <img src="./assets/images/house.png" alt="">
+        </div>
+    </div>
+</div>
+
     <script src="main.js"></script>
+    <div style="display:none;">
+        <img id="source" src="./assets/images/grass.png">
+    </div>
 </body>
+
 </html>
